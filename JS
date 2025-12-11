@@ -1,1 +1,63 @@
+// ------ Drill videos -------
+const DRILLS = {
+    "Acceleration": "https://example.com/videos/acceleration_drill",
+    "Speed Endurance": "https://example.com/videos/speed_endurance",
+    "Starts": "https://example.com/videos/start_technique",
+    "Mobility": "https://example.com/videos/flexibility",
+    "Recovery": "https://example.com/videos/recovery"
+};
+
+// ------ Recommendations ------
+const RECOMMENDATIONS = {
+    "100m": ["Acceleration", "Starts", "Speed Endurance", "Mobility", "Recovery"],
+    "200m": ["Speed Endurance", "Acceleration", "Mobility", "Recovery"],
+    "400m": ["Speed Endurance", "Mobility", "Recovery"],
+    "1500m": ["Recovery", "Mobility", "Endurance"] || []
+};
+
+// ------ Generate Schedule ------
+function generateSchedule() {
+    const sprint = document.getElementById("sprintType").value;
+    const weeks = parseInt(document.getElementById("weeks").value);
+
+    const drills = RECOMMENDATIONS[sprint];
+    let schedule = [];
+    let start = new Date();
+
+    for (let w = 1; w <= weeks; w++) {
+        for (let d = 1; d <= 5; d++) {
+            let choice = drills[Math.floor(Math.random() * drills.length)];
+            let dayDate = new Date(start);
+            dayDate.setDate(start.getDate() + (w-1)*7 + d);
+
+            schedule.push({
+                week: w,
+                day: d,
+                date: dayDate.toDateString(),
+                drill: choice,
+                link: DRILLS[choice]
+            });
+        }
+    }
+
+    renderTable(schedule);
+}
+
+// ------ Display Schedule ------
+function renderTable(data) {
+    const tbody = document.querySelector("#scheduleTable tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(row => {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.week}</td>
+            <td>${row.day}</td>
+            <td>${row.date}</td>
+            <td>${row.drill}</td>
+            <td><a href="${row.link}" target="_blank">Watch</a></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
